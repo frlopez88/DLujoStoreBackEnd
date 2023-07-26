@@ -42,3 +42,6 @@ create table tbl_direcciones (
     correo_electronico varchar(80), 
     constraint fk_correo_electronico_1 Foreign Key (correo_electronico) REFERENCES tbl_usuario(correo_electronico)
 );
+
+
+select * from tbl_estado;
