@@ -44,4 +44,4 @@ create table tbl_direcciones (
 );
 
 
-select * from tbl_estado;
+select * from tbl_rol;
