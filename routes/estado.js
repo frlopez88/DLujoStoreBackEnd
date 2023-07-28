@@ -3,12 +3,11 @@ const app = express.Router();
 const db = require('../db/conn');
 
 
-app.post('', (req, res)=>{
-
+app.post('', (req, res) => {
 
     const parametros = [
 
-        req.body.nombre_estado 
+        req.body.nombre_estado
 
     ];
 
@@ -18,39 +17,50 @@ app.post('', (req, res)=>{
                  ($1) returning id
                 `;
 
-    db.one(sql, parametros, event => event.id )
-    .then (  data => {
+    let mensajes = new Array();
 
-        const objetoCreado = {
+    let respuestaValidacion = {
 
-            id : data, 
-            nombre_estado : req.body.nombre_estado
+        exito: true,
+        mensaje: mensajes,
+        excepcion: "",
+        item_rol: ""
 
-        }
+    };
 
-        res.json(objetoCreado);
+    db.one(sql, parametros, event => event.id)
+        .then(data => {
 
-    })
-    .catch( (error)=>{
+            const objetoCreado = {
 
-        //status
+                id: data,
+                nombre_estado: req.body.nombre_estado
+
+            }
+
+            res.json(objetoCreado);
+
+        })
+        .catch((error) => {
+
+            //status
             // 404 -- estatus no encontre datos  // gets
             // 500 error de compilacion  // dml  (insert, delete, update)
             res.status(500).json(error);
 
         }
-    );
+        );
 
 });
 
 
-app.put('/:id', (req, res)=>{
+app.put('/:id', (req, res) => {
 
 
     const parametros = [
 
         req.body.nombre_estado,
-        req.params.id 
+        req.params.id
 
     ];
 
@@ -61,37 +71,37 @@ app.put('/:id', (req, res)=>{
 
                 `;
 
-    db.result(sql, parametros, r => r.rowCount )
-    .then (  data => {
+    db.result(sql, parametros, r => r.rowCount)
+        .then(data => {
 
-        const objetoMod = {
+            const objetoMod = {
 
-            id : data, 
-            nombre_estado : req.body.nombre_estado
+                id: data,
+                nombre_estado: req.body.nombre_estado
 
-        }
+            }
 
-        res.json(objetoMod);
+            res.json(objetoMod);
 
-    })
-    .catch( (error)=>{
+        })
+        .catch((error) => {
 
-        //status
+            //status
             // 404 -- estatus no encontre datos  // gets
             // 500 error de compilacion  // dml  (insert, delete, update)
             res.status(500).json(error);
 
         }
-    );
+        );
 
 });
 
-app.delete('/:id', (req, res)=>{
+app.delete('/:id', (req, res) => {
 
 
     const parametros = [
 
-        req.params.id 
+        req.params.id
 
     ];
 
@@ -102,33 +112,33 @@ app.delete('/:id', (req, res)=>{
 
                 `;
 
-    db.result(sql, parametros, r=> r.rowCount )
-    .then (  data => {
+    db.result(sql, parametros, r => r.rowCount)
+        .then(data => {
 
-        const objetoMod = {
+            const objetoMod = {
 
-            id : data, 
-            nombre_estado : req.body.nombre_estado,
-            estado : false
-        }
+                id: data,
+                nombre_estado: req.body.nombre_estado,
+                estado: false
+            }
 
-        res.json(objetoMod);
+            res.json(objetoMod);
 
-    })
-    .catch( (error)=>{
+        })
+        .catch((error) => {
 
-        //status
+            //status
             // 404 -- estatus no encontre datos  // gets
             // 500 error de compilacion  // dml  (insert, delete, update)
             res.status(500).json(error);
 
         }
-    );
+        );
 
 });
 
 
-app.get('', (req, res)=>{
+app.get('', (req, res) => {
 
 
     let sql = `  
@@ -136,27 +146,27 @@ app.get('', (req, res)=>{
                     where activo = true 
 
                 `;
-    db.any( sql , e => e.id )
-    .then( row =>{
+    db.any(sql, e => e.id)
+        .then(row => {
 
-        if (row.length === 0){
+            if (row.length === 0) {
 
-            res.status(404).json( {mensaje : "Sin Datos"} );
-        }else {
+                res.status(404).json({ mensaje: "Sin Datos" });
+            } else {
 
-            res.json(row);
+                res.json(row);
 
-        }
+            }
 
-        
 
-    })
-    .catch( (error)=>{
 
-        res.status(500).json(error);
+        })
+        .catch((error) => {
 
-    });
-    
+            res.status(500).json(error);
+
+        });
+
 });
 
 module.exports = app;

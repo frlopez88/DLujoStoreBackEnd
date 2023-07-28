@@ -2,12 +2,12 @@ const express = require('express');
 const app = express.Router();
 const db = require('../db/conn');
 
-app.post('', (req, res)=>{
+app.post('', (req, res) => {
 
 
     const parametros = [
 
-        req.body.nombre_rol 
+        req.body.nombre_rol
 
     ];
 
@@ -17,39 +17,52 @@ app.post('', (req, res)=>{
                  ($1) returning id
                 `;
 
-    db.one(sql, parametros, event => event.id )
-    .then (  data => {
+    let mensajes = new Array();
 
-        const objetoCreado = {
+    let respuestaValidacion = {
 
-            id : data, 
-            nombre_rol : req.body.nombre_rol
+        exito: true,
+        mensaje: mensajes,
+        excepcion: "",
+        item_rol: ""
+
+    };
+
+    db.one(sql, parametros, event => event.id)
+        .then(data => {
+
+            const objetoCreado = {
+                id: data,
+                nombre_rol: req.body.nombre_rol
+            }
+
+            respuestaValidacion.mensaje.push("Operación Exitosa");
+            respuestaValidacion.item_rol = objetoCreado;
+
+            res.json(respuestaValidacion);
+
+        })
+        .catch((error) => {
+
+
+            respuestaValidacion.exito = false;
+            respuestaValidacion.mensaje.push("Operación Erronea");
+            respuestaValidacion.excepcion = error.message;
+            res.status(500).json(respuestaValidacion);
 
         }
-
-        res.json(objetoCreado);
-
-    })
-    .catch( (error)=>{
-
-        //status
-            // 404 -- estatus no encontre datos  // gets
-            // 500 error de compilacion  // dml  (insert, delete, update)
-            res.status(500).json(error);
-
-        }
-    );
+        );
 
 });
 
 
-app.put('/:id', (req, res)=>{
+app.put('/:id', (req, res) => {
 
 
     const parametros = [
 
         req.body.nombre_rol,
-        req.params.id 
+        req.params.id
 
     ];
 
@@ -60,37 +73,50 @@ app.put('/:id', (req, res)=>{
 
                 `;
 
-    db.result(sql, parametros, r => r.rowCount )
-    .then (  data => {
+    let mensajes = new Array();
 
-        const objetoMod = {
+    let respuestaValidacion = {
 
-            id : req.params.id , 
-            nombre_estado : req.body.nombre_rol
+        exito: true,
+        mensaje: mensajes,
+        excepcion: "",
+        item_rol: ""
 
-        }
+    };
 
-        res.json(objetoMod);
+    db.result(sql, parametros, r => r.rowCount)
+        .then(data => {
 
-    })
-    .catch( (error)=>{
+            const objetoMod = {
 
-        //status
-            // 404 -- estatus no encontre datos  // gets
-            // 500 error de compilacion  // dml  (insert, delete, update)
+                id: req.params.id,
+                nombre_estado: req.body.nombre_rol
+
+            }
+
+            respuestaValidacion.mensaje = "Operación Exitosa";
+            respuestaValidacion.item_rol = objetoMod;
+            res.json(respuestaValidacion);
+
+        })
+        .catch((error) => {
+
+            respuestaValidacion.exito = false;
+            respuestaValidacion.mensaje.push("Operación Erronea");
+            respuestaValidacion.excepcion = error.message;
             res.status(500).json(error);
 
         }
-    );
+        );
 
 });
 
-app.delete('/:id', (req, res)=>{
+app.delete('/:id', (req, res) => {
 
 
     const parametros = [
 
-        req.params.id 
+        req.params.id
 
     ];
 
@@ -101,33 +127,46 @@ app.delete('/:id', (req, res)=>{
 
                 `;
 
-    db.result(sql, parametros, r=> r.rowCount )
-    .then (  data => {
+    let mensajes = new Array();
 
-        const objetoMod = {
+    let respuestaValidacion = {
 
-            id : req.params.id , 
-            nombre_rol : req.body.nombre_rol,
-            estado : false
-        }
+        exito: true,
+        mensaje: mensajes,
+        excepcion: "",
+        item_rol: ""
 
-        res.json(objetoMod);
+    };
 
-    })
-    .catch( (error)=>{
+    db.result(sql, parametros, r => r.rowCount)
+        .then(data => {
 
-        //status
-            // 404 -- estatus no encontre datos  // gets
-            // 500 error de compilacion  // dml  (insert, delete, update)
+            const objetoMod = {
+
+                id: req.params.id,
+                nombre_rol: req.body.nombre_rol,
+                estado: false
+            }
+
+            respuestaValidacion.mensaje = "Operación Exitosa";
+            respuestaValidacion.item_rol = objetoMod;
+            res.json(respuestaValidacion);
+
+        })
+        .catch((error) => {
+
+            respuestaValidacion.exito = false;
+            respuestaValidacion.mensaje.push("Operación Erronea");
+            respuestaValidacion.excepcion = error.message;
             res.status(500).json(error);
 
         }
-    );
+        );
 
 });
 
 
-app.get('', (req, res)=>{
+app.get('', (req, res) => {
 
 
     let sql = `  
@@ -135,27 +174,27 @@ app.get('', (req, res)=>{
                     where activo = true 
 
                 `;
-    db.any( sql , e => e.id )
-    .then( row =>{
+    db.any(sql, e => e.id)
+        .then(row => {
 
-        if (row.length === 0){
+            if (row.length === 0) {
 
-            res.status(404).json( {mensaje : "Sin Datos"} );
-        }else {
+                res.status(404).json({ mensaje: "Sin Datos" });
+            } else {
 
-            res.json(row);
+                res.json(row);
 
-        }
+            }
 
-        
 
-    })
-    .catch( (error)=>{
 
-        res.status(500).json(error);
+        })
+        .catch((error) => {
 
-    });
-    
+            res.status(500).json(error);
+
+        });
+
 });
 
 

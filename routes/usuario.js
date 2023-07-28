@@ -48,6 +48,7 @@ app.post('', (req, res) => {
         mensaje: mensajes,
         excepcion : "", 
         item_usuario : ""
+
     };
 
 
@@ -77,15 +78,16 @@ app.post('', (req, res) => {
 
                 };
                 respuestaValidacion.mensaje.push("Operación Exitosa") ;
-                respuestaValidacion.itemUsuario = objetoCreado;
+                respuestaValidacion.item_usuario = objetoCreado;
 
                 res.json(respuestaValidacion);
 
             })
             .catch((error) => {
 
-                respuestaValidacion.mensaje.push("Operación Erronea ") ;
+                respuestaValidacion.mensaje.push("Operación Erronea") ;
                 respuestaValidacion.excepcion = error.message;
+                respuestaValidacion.exito = false;
                 res.status(500).json(respuestaValidacion);
 
 
