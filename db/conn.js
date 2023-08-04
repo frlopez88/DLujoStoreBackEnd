@@ -1,7 +1,5 @@
 const pgp = require('pg-promise')();
-
 const cn = 'postgresql://postgres:Hola12$@localhost:5432/dlujostore';
-
 const db = pgp(cn);
 
 db.connect()
