@@ -14,7 +14,7 @@ app.post('', (req, res) => {
     let sql = `  insert into tbl_rol 
                  (nombre_rol)
                  values 
-                 ($1) returning id
+                 ($1) returning id, nombre_rol
                 `;
 
     let mensajes = new Array();
@@ -28,12 +28,12 @@ app.post('', (req, res) => {
 
     };
 
-    db.one(sql, parametros, event => event.id)
+    db.one(sql, parametros)
         .then(data => {
 
             const objetoCreado = {
-                id: data,
-                nombre_rol: req.body.nombre_rol
+                id: data.id,
+                nombre_rol: data.nombre_rol
             }
 
             respuestaValidacion.mensaje.push("Operación Exitosa");

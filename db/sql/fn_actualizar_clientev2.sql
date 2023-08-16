@@ -1,4 +1,4 @@
-CREATE or replace FUNCTION fn_crear_clientev2( p_correo varchar , p_nombre varchar, p_apellido varchar, p_contrasenia varchar) 
+CREATE or replace FUNCTION fn_actualizar_clientev2( p_correo varchar , p_nombre varchar, p_apellido varchar, p_contrasenia varchar) 
 RETURNS  table 
                 (   
                     exito bool, 
@@ -15,12 +15,13 @@ DECLARE
 
 BEGIN
 
-    v_mensaje := 'Error en creacion de usuario '||p_correo;
+    v_mensaje := 'Error en actualizar de usuario '||p_correo;
 
-    insert into tbl_usuario
-    (correo_electronico, nombre, apellido, contrasenia, id_rol)
-    values 
-    (p_correo , p_nombre, p_apellido , p_contrasenia, 2 ) ;
+    update tbl_usuario 
+    set nombre = p_nombre, 
+        apellido = p_apellido,
+        contrasenia = p_contrasenia 
+    where correo_electronico = p_correo;
 
 
     v_mensaje := 'Error en la insercion del log';
@@ -28,7 +29,7 @@ BEGIN
     insert into tbl_log_de_acciones
     (descripcion)
     values
-    ('Se crea el usuario '||p_correo );
+    ('Se actualizar el usuario '||p_correo );
 
 
     v_mensaje := 'Operación Exitosa';
@@ -40,7 +41,7 @@ EXCEPTION when OTHERS then
     insert into tbl_log_errores
     ( descripcion, proceso)
     values 
-    (v_mensaje ||' - '|| SQLERRM , 'pdw_crear_cliente'  );
+    (v_mensaje ||' - '|| SQLERRM , 'fn_actualizar_clientev2'  );
 
     v_exito := false; 
     v_mensaje := 'Operación Erronea - '||SQLERRM;

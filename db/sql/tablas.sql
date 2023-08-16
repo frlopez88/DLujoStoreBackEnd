@@ -50,3 +50,10 @@ CREATE TABLE tbl_log_errores(
     fecha timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id)
 );
+
+/*Ejemplos para llamar funciones y procedimientos almacenados*/
+
+/*Procedimiento almacenado*/
+call pdw_crear_cliente('fr@gmail.com', 'fernando lopez', 'Jesus');
+/*Funcion*/
+select * from fn_crear_cliente('fr@gmail.com', 'Fernando' ,'Lopez', 'Jesus');

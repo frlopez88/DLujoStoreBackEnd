@@ -18,8 +18,6 @@ app.post('', (req, res) => {
         req.body.correo_electronico,
         req.body.nombre,
         req.body.apellido,
-        2, // Id Estado (Sin Validar Correo)
-        2, // Id Rol (Cliente)
         req.body.contrasenia
 
     ];
@@ -46,8 +44,8 @@ app.post('', (req, res) => {
 
         exito: bandera,
         mensaje: mensajes,
-        excepcion : "", 
-        item_usuario : ""
+        excepcion: "",
+        item_usuario: ""
 
     };
 
@@ -59,25 +57,20 @@ app.post('', (req, res) => {
     } else {
 
 
-        let sql = `insert into tbl_usuario  
-                    (correo_electronico,nombre, apellido, id_estado , id_rol, contrasenia)
-                    values 
-                    ($1, $2, $3, $4, $5, $6) returning correo_electronico
-        
-                ` ;
+        let sql = ` select * from  fn_crear_clientev2($1,$2, $3, $4)  `;
 
-        db.one(sql, parametros, event => event.id)
+        db.any(sql, parametros, e => e.id)
             .then(data => {
 
                 const objetoCreado = {
 
-                    correo_electronico: req.body.correo_electronico, 
-                    nombre: req.body.nombre, 
+                    correo_electronico: req.body.correo_electronico,
+                    nombre: req.body.nombre,
                     apellido: req.body.apellido
-                    
+
 
                 };
-                respuestaValidacion.mensaje.push("Operación Exitosa") ;
+                respuestaValidacion.mensaje.push("Operación Exitosa");
                 respuestaValidacion.item_usuario = objetoCreado;
 
                 res.json(respuestaValidacion);
@@ -85,7 +78,7 @@ app.post('', (req, res) => {
             })
             .catch((error) => {
 
-                respuestaValidacion.mensaje.push("Operación Erronea") ;
+                respuestaValidacion.mensaje.push("Operación Erronea");
                 respuestaValidacion.excepcion = error.message;
                 respuestaValidacion.exito = false;
                 res.status(500).json(respuestaValidacion);
@@ -97,6 +90,64 @@ app.post('', (req, res) => {
 
 
     }
+
+});
+
+
+app.put('', (req, res) => {
+
+
+    const parametros = [
+
+        req.body.correo_electronico,
+        req.body.nombre,
+        req.body.apellido,
+        req.body.contrasenia
+
+    ];
+
+    let mensajes = new Array();
+    let bandera = true;
+
+    let respuestaValidacion = {
+
+        exito: bandera,
+        mensaje: mensajes,
+        excepcion: "",
+        item_usuario: ""
+
+    };
+
+    let sql = ` select * from  fn_actualizar_clientev2($1,$2, $3, $4)  `;
+
+    db.any(sql, parametros, e => e.id)
+        .then(data => {
+
+            const objetoModificado = {
+
+                correo_electronico: req.body.correo_electronico,
+                nombre: req.body.nombre,
+                apellido: req.body.apellido
+
+
+            };
+            respuestaValidacion.mensaje.push("Operación Exitosa");
+            respuestaValidacion.item_usuario = objetoModificado;
+
+            res.json(respuestaValidacion);
+
+        })
+        .catch((error) => {
+
+            respuestaValidacion.mensaje.push("Operación Erronea");
+            respuestaValidacion.excepcion = error.message;
+            respuestaValidacion.exito = false;
+            res.status(500).json(respuestaValidacion);
+
+
+        }
+        );
+
 
 });
 
