@@ -152,4 +152,32 @@ app.put('', (req, res) => {
 });
 
 
+app.get('', (req,res)=>{
+
+
+    let sql = 'select correo_electronico, nombre, apellido from tbl_usuarios where id_rol = 2 and id_estado = 1';
+
+    db.any(sql, e => e.id)
+        .then(row => {
+
+            if (row.length === 0) {
+
+                res.status(404).json({ mensaje: "Sin Datos" });
+            } else {
+
+                res.json(row);
+
+            }
+
+
+
+        })
+        .catch((error) => {
+
+            res.status(500).json(error);
+
+        });
+
+});
+
 module.exports = app;
